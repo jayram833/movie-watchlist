@@ -1,6 +1,7 @@
 const pool = require("../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util")
 const AppError = require("../utils/appError");
 
 require("dotenv").config();
@@ -54,4 +55,23 @@ exports.login = async function (req, res, next) {
     } catch (e) {
         next(new AppError("Something went wrong, please try again later", 500));
     }
+}
+
+
+exports.protect = async function (req, res, next) {
+    // 1) Getting token and check if it's there
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
+    if (!token) next(new AppError("You are not logged in! Please log in to get access.", 401))
+    // 2) Verification jwt
+    const decoded = await jwt.verify(token, jwtSecret);
+    // 3) Check if user still exists
+    const freshUser = await pool.query(`SELECT id FROM users WHERE id=$1`, [decoded.id]);
+    if (!freshUser.rows[0]) {
+        return next(new AppError("The user belonging to this token does not exists!", 401));
+    }
+    // 4) Check if user changed password after jwt was received
+    next();
 }
