@@ -1,11 +1,34 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useContext, useEffect, useState } from "react";
-import { MoviesContext } from "../App";
+import { useAuth } from "../hooks/useAuth";
+// import { MoviesContext } from "../App";
 
 // const BASE_URL = import.meta.env.VITE_API_URL;
 
 function Dashboard() {
-    const { movies } = useContext(MoviesContext);
+    // const { movies } = useContext(MoviesContext);
+    const [movies, setMovies] = useState([]);
+    const { token } = useAuth();
+
+    async function fetchMovies() {
+        try {
+            const resp = await fetch(`api/v1/movies`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (!resp.ok) throw new Error("Http error");
+            const { data } = await resp.json();
+            setMovies(data.movies);
+        } catch (e) {
+            console.error(e.message);
+        }
+    }
+    useEffect(() => {
+        fetchMovies();
+    }, [])
+
+
     return (
         <div className="max-w-6xl mx-auto mt-10 p-6">
             <h2 className="text-2xl font-bold text-indigo-600 mb-6">Movie Dashboard</h2>

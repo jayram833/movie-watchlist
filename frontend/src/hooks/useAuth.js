@@ -24,7 +24,7 @@ export function useAuth() {
     }, [token]);
 
     const login = useCallback(async (email, password) => {
-        const res = await fetch("/api/v1/users/login", {
+        const res = await fetch("/api/v1/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),

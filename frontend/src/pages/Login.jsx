@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 
@@ -11,6 +11,7 @@ function Login() {
     });
     const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -19,8 +20,12 @@ function Login() {
 
     async function handleLogin(e) {
         e.preventDefault();
-        const user = await login(formData.email, formData.password);
-        console.log(user);
+        const result = await login(formData.email, formData.password);
+
+        if (result.status === "success") {
+            navigate('/dashboard');
+        }
+
         setFormData({
             email: "",
             password: ""
