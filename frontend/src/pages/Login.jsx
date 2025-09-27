@@ -19,7 +19,6 @@ function Login() {
 
     async function handleLogin(e) {
         e.preventDefault();
-        console.log(formData);
         const user = await login(formData.email, formData.password);
         console.log(user);
         setFormData({
