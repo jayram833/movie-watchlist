@@ -20,7 +20,7 @@ function Navbar() {
                         <Link to="/dashboard" className="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded">Dashboard</Link>
                     </li>
                     <li>
-                        <Link to="/addmovie" className="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded">Add Movie</Link>
+                        {isAuthenticated && <Link to="/addmovie" className="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded">Add Movie</Link>}
                     </li>
                     <li>
                         {isAuthenticated ? <button onClick={() => handleLogout()} className=" bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded cursor-pointer ">Logout</button> : pathname !== "/login" && <Link to="/login" className="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 cursor-pointer rounded">Login</Link>}

@@ -37,7 +37,7 @@ function Dashboard() {
             }
         } catch (err) {
             setToast({ type: "error", message: err.message });
-            // console.log(err.message)
+            console.log(err.message)
         }
     }
 
@@ -48,11 +48,21 @@ function Dashboard() {
                     Authorization: `Bearer ${token}`
                 }
             });
-            if (!resp.ok) throw new Error("Http error");
-            const { data } = await resp.json();
-            setMovies(data.movies);
-        } catch (e) {
-            console.error(e.message);
+            if (!resp.ok) {
+                const errorMsg = await resp.json();
+                setShowToast(true);
+                throw new Error(errorMsg.message);
+            }
+            const { data, status } = await resp.json();
+            if (status === "success") {
+                setShowToast(true);
+                setToast({ type: "success", message: status });
+                setMovies(data.movies);
+            }
+
+        } catch (err) {
+            setToast({ type: "error", message: err.message });
+            console.error(err.message);
         }
     }
     useEffect(() => {
