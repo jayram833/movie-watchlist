@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MoviesContext } from "../App";
+import { useAuth } from "../hooks/useAuth";
 function AddMovie() {
     const [form, setForm] = useState({
         user_id: 1,
@@ -9,7 +10,8 @@ function AddMovie() {
         release_year: "",
         status: "",
     });
-    const { handleMovieAdded } = useContext(MoviesContext);
+    // const { handleMovieAdded } = useContext(MoviesContext);
+    const { token } = useAuth();
     const navigate = useNavigate();
     function goToDashboard() {
         navigate("/dashboard");
@@ -24,14 +26,15 @@ function AddMovie() {
             const response = await fetch('api/v1/movies', {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(form)
             });
             if (!response.ok) throw new Error(`Http error! status: ${response.status}`);
             const result = await response.json();
             if (result.status === "success" && result.data.movie) {
-                handleMovieAdded(result.data.movie)
+                // handleMovieAdded(result.data.movie)
                 goToDashboard();
             }
         } catch (error) {
