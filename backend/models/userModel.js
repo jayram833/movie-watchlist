@@ -24,6 +24,7 @@ exports.checkUserById = async function (id) {
     return await pool.query(`SELECT id FROM users WHERE id=$1`, [id])
 }
 exports.insertUser = async function (name, email, hashedPassword) {
+    console.log(name)
     return await pool.query(`INSERT INTO users (name, email, password) VALUES ($1,$2,$3) RETURNING *`, [name, email, hashedPassword])
 }
 
