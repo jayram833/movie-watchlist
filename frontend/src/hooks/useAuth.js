@@ -24,16 +24,24 @@ export function useAuth() {
     }, [token]);
 
     const login = useCallback(async (email, password) => {
-        const res = await fetch("/api/v1/users/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
+        try {
+            const res = await fetch("/api/v1/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
 
-        if (!res.ok) throw new Error("Login failed");
-        const data = await res.json();
-        setToken(data.token);
-        return data;
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || "Login Failed!")
+            }
+            const data = await res.json();
+            setToken(data.token);
+            return data;
+        } catch (err) {
+            console.error(err.message);
+            return { error: err.message }
+        }
     }, [setToken]);
 
     const signup = useCallback(async (formData) => {

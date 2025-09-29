@@ -1,9 +1,10 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
 
 function Navbar() {
     const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
     function handleLogout() {
         logout();
         navigate("/login");
@@ -22,7 +23,7 @@ function Navbar() {
                         <Link to="/addmovie" className="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded">Add Movie</Link>
                     </li>
                     <li>
-                        {isAuthenticated ? <button onClick={() => handleLogout()} className=" bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded cursor-pointer ">Logout</button> : <Link to="/login" className="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 cursor-pointer rounded">Login</Link>}
+                        {isAuthenticated ? <button onClick={() => handleLogout()} className=" bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded cursor-pointer ">Logout</button> : pathname !== "/login" && <Link to="/login" className="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 cursor-pointer rounded">Login</Link>}
                     </li>
                 </ul>
             </div>

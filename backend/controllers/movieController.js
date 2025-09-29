@@ -1,4 +1,4 @@
-const { getAllMovies, addMovie } = require("../models/movieModel");
+const { getAllMovies, addMovie, deleteMovie } = require("../models/movieModel");
 const AppError = require("../utils/appError");
 
 
@@ -29,5 +29,21 @@ exports.addSingleMovie = async function (req, res, next) {
     } catch (err) {
         console.log(err)
         return next(new AppError("failed to add movie", 500))
+    }
+}
+
+exports.deleteSingleMovie = async function (req, res, next) {
+    const id = req.params.id;
+    try {
+        const result = await deleteMovie(id);
+        if (result.rowCount === 0) {
+            throw new Error("Movie not Found!")
+        }
+        res.status(201).json({
+            status: "success",
+        });
+    } catch (err) {
+        console.log(err)
+        return next(new AppError(err.message, 500))
     }
 }

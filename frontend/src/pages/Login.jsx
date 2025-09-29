@@ -2,6 +2,7 @@ import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import Toast from "../components/Toast";
 
 
 function Login() {
@@ -10,6 +11,8 @@ function Login() {
         password: ""
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastError, setToastError] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -21,11 +24,13 @@ function Login() {
     async function handleLogin(e) {
         e.preventDefault();
         const result = await login(formData.email, formData.password);
-
         if (result.status === "success") {
             navigate('/dashboard');
         }
-
+        if (result.error) {
+            setToastError(result.error);
+            setShowToast(true);
+        }
         setFormData({
             email: "",
             password: ""
@@ -96,6 +101,14 @@ function Login() {
                     <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">Signup</Link>
                 </p>
             </div>
+            {showToast && (
+                <Toast
+                    message={toastError}
+                    type="error"
+                    duration={3000}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
         </div>
     );
 }
